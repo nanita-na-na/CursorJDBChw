@@ -6,27 +6,28 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import static org.example.SqlQueries.*;
+import static org.example.SqlQueries.CREATE_TABLE;
+import static org.example.SqlQueries.INSERT_USERS;
 
 public class Service {
 
-    public static void createTable() throws SQLException {
-        Connection connection = MyConnection.getInstance().getConnection();
+    public void createTable() throws SQLException {
+        Connection connection = MyConnection.getConnection();
         Statement statement = connection.createStatement();
         statement.execute(CREATE_TABLE);
     }
 
-    public static void insertUsers() throws SQLException {
-        Connection connection = MyConnection.getInstance().getConnection();
+    public void insertUsers() throws SQLException {
+        Connection connection = MyConnection.getConnection();
         Statement statement = connection.createStatement();
         statement.execute(INSERT_USERS);
     }
 
-    public static void printUnderageUsers() throws SQLException {
-        Connection connection = MyConnection.getInstance().getConnection();
+    public void selectUsers(String query) throws SQLException {
+        Connection connection = MyConnection.getConnection();
         Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(query);
 
-        ResultSet resultSet = statement.executeQuery(SELECT_UNDERAGE_USERS);
         var users = new ArrayList<>();
         while (resultSet.next()) {
             User user = new User();
@@ -41,60 +42,11 @@ public class Service {
         users.forEach(System.out::println);
     }
 
-    public static void printNameEndedO() throws SQLException {
-        Connection connection = MyConnection.getInstance().getConnection();
+    public void selectCountUsers(String query) throws SQLException {
+        Connection connection = MyConnection.getConnection();
         Statement statement = connection.createStatement();
 
-        ResultSet resultSet = statement.executeQuery(SELECT_NAME_ENDED_O);
-        var users = new ArrayList<>();
-        while (resultSet.next()) {
-            User user = new User();
-            user.setId(resultSet.getInt("id"));
-            user.setFirstName(resultSet.getString("first_name"));
-            user.setLastName(resultSet.getString("last_name"));
-            user.setGender(resultSet.getString("gender"));
-            user.setAge(resultSet.getInt("age"));
-
-            users.add(user);
-        }
-        users.forEach(System.out::println);
-    }
-
-    public static void printAgeBetween18And60() throws SQLException {
-        Connection connection = MyConnection.getInstance().getConnection();
-        Statement statement = connection.createStatement();
-
-        ResultSet resultSet = statement.executeQuery(SELECT_BETWEEN_18_AND_60);
-        var users = new ArrayList<>();
-        while (resultSet.next()) {
-            User user = new User();
-            user.setId(resultSet.getInt("id"));
-            user.setFirstName(resultSet.getString("first_name"));
-            user.setLastName(resultSet.getString("last_name"));
-            user.setGender(resultSet.getString("gender"));
-            user.setAge(resultSet.getInt("age"));
-
-            users.add(user);
-        }
-        users.forEach(System.out::println);
-    }
-
-    public static void printAdultUsers() throws SQLException {
-        Connection connection = MyConnection.getInstance().getConnection();
-        Statement statement = connection.createStatement();
-
-        ResultSet resultSet = statement.executeQuery(SELECT_ADULT_USERS);
-        resultSet.next();
-        int count = resultSet.getInt("count");
-        resultSet.close();
-        System.out.println(count);
-    }
-
-    public static void printCountNameHaveA() throws SQLException {
-        Connection connection = MyConnection.getInstance().getConnection();
-        Statement statement = connection.createStatement();
-
-        ResultSet resultSet = statement.executeQuery(SELECT_COUNT_NAME_HAVE_A);
+        ResultSet resultSet = statement.executeQuery(query);
         resultSet.next();
         int count = resultSet.getInt("count");
         resultSet.close();

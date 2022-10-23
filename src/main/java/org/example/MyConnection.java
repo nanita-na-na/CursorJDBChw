@@ -7,24 +7,20 @@ import java.sql.SQLException;
 import static org.example.JDBCConstants.*;
 
 public class MyConnection {
+    private static final Connection connection;
 
-    private static MyConnection myInstance;
-    private Connection connection;
-
-    private MyConnection() throws SQLException {
-        this.connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-    }
-
-    public Connection getConnection() {
-        return connection;
-    }
-
-    public static MyConnection getInstance() throws SQLException {
-        if (myInstance == null) {
-            myInstance = new MyConnection();
-        } else if (myInstance.getConnection().isClosed()) {
-            myInstance = new MyConnection();
+    static {
+        try {
+            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        return myInstance;
+    }
+
+    private MyConnection() {
+    }
+
+    public static Connection getConnection() {
+        return connection;
     }
 }
